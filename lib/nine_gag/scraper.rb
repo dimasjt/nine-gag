@@ -1,3 +1,4 @@
+require 'ostruct'
 module NineGag
   class Scraper
     def self.get(path)
@@ -14,7 +15,8 @@ module NineGag
         title = data.search('h2.badge-item-title .badge-evt').first
         post_meta = data.search('p.post-meta').first
 
-        {
+        hash_data = {
+          id: data.attribute('data-entry-id').value,
           title: title.text.strip,
           url: title.attribute('href').value,
           img: image_data(data.search('div.badge-post-container a img').first),
@@ -22,6 +24,7 @@ module NineGag
           points: post_meta.search('a.point').first.text.sub(' points', '').strip,
           media: media_data(data.search('video').first)
         }
+        OpenStruct.new(hash_data)
       end
     end
 
