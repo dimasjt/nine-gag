@@ -1,37 +1,55 @@
 require 'ostruct'
+
 module NineGag
   class Scraper
-    def self.get(path)
-      url = "http://9gag.com/#{path}"
-      scrape = Nokogiri::HTML(open(url))
+    # path = ":section/:type"
+    def self.index(path)
+      generate_index_data(scrape(path))
+    end
 
-      generate_data(scrape)
+    # path = "gag/:id"
+    def self.show(path)
+      generate_show_data(scrape(path).search('article').first)
     end
 
     private
 
-    def self.generate_data(scrape)
-      scrape.search('article').map do |data|
-        title = data.search('h2.badge-item-title .badge-evt').first
-        post_meta = data.search('p.post-meta').first
+    def self.scrape(path)
+      @scrape ||= Nokogiri::HTML(open("http://9gag.com/#{path}"))
+    end
 
-        hash_data = {
-          id: data.attribute('data-entry-id').value,
-          title: title.text.strip,
-          url: title.attribute('href').value,
-          img: image_data(data.search('div.badge-post-container a img').first),
-          comments: post_meta.search('a.comment').first.text.sub(' comments', '').strip,
-          points: post_meta.search('a.point').first.text.sub(' points', '').strip,
-          media: media_data(data.search('video').first)
-        }
-        OpenStruct.new(hash_data)
+    def self.generate_show_data(post, index = false)
+      if index
+        title = post.search('h2.badge-item-title .badge-evt')
+      else
+        title = post.search('h2.badge-item-title')
+      end
+
+      post_meta = post.search('p.post-meta').first
+
+      post_data = {
+        id: post.attribute('data-entry-id').value,
+        title: title.text.strip,
+        url: post.attribute('data-entry-url').value,
+        image: image_data(post.search('div.badge-post-container a img').first),
+        comments_count: post_meta.search('a.comment').first.text.sub(' comments', '').sub(',', '').strip.to_i,
+        points: post_meta.search('a.point').first.text.sub(' points', '').sub(',', '').strip,
+        media: media_data(post.search('video').first)
+      }
+
+      OpenStruct.new(post_data)
+    end
+
+    def self.generate_index_data(scrape)
+      scrape.search('article').map do |post|
+        generate_show_data(post)
       end
     end
 
-    def self.image_data(img)
-      return nil if img.nil?
+    def self.image_data(image)
+      return nil if image.nil?
 
-      img.attribute('src').value
+      image.attribute('src').value
     end
 
     def self.media_data(media)
