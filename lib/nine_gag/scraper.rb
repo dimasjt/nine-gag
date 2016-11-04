@@ -3,19 +3,56 @@ require 'ostruct'
 module NineGag
   class Scraper
     # path = ":section/:type"
-    def self.index(path)
-      generate_index_data(scrape(path))
+    # next_page = "last_id"
+    def self.index(path, next_page = nil)
+      if next_page.nil?
+        data = scrape_html(path)
+      else
+        data = generate_json_posts(path, next_page)
+      end
+
+      generate_index_data(data, next_page)
     end
 
     # path = "gag/:id"
     def self.show(path)
-      generate_show_data(scrape(path).search('article').first)
+      generate_show_data(scrape_html(path).search('article').first)
     end
 
     private
 
-    def self.scrape(path)
-      @scrape ||= Nokogiri::HTML(open("http://9gag.com/#{path}"))
+    def self.full_url(path)
+      "http://9gag.com/#{path}"
+    end
+
+    # will return Array of Nokogiri
+    def self.generate_json_posts(path, next_page)
+      items = JSON.parse(scrape_json(path, next_page).body)["items"]
+
+      items.map { |item| scrape_html(item.last).search('article').first }
+    end
+
+    def self.scrape_json(path, next_page)
+      RestClient.get(full_url(path),
+        { Accept: 'application/json', "X-Requested-With": 'XMLHttpRequest',
+          params: { id: next_page, c: 10 }
+        }
+      )
+    end
+
+    # scrape html or from path
+    def self.scrape_html(path)
+      Nokogiri::HTML(path_or_html(path))
+    end
+
+    # check parameter if path or html
+    def self.path_or_html(data)
+      # if path
+      if data.length < 50
+        open(data)
+      else
+        data
+      end
     end
 
     def self.generate_show_data(post, index = false)
@@ -40,8 +77,10 @@ module NineGag
       OpenStruct.new(post_data)
     end
 
-    def self.generate_index_data(scrape)
-      scrape.search('article').map do |post|
+    def self.generate_index_data(scrape, next_page)
+      data = next_page.nil? ? scrape.search('article') : scrape
+
+      data.map do |post|
         generate_show_data(post)
       end
     end
