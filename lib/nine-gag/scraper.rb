@@ -49,7 +49,7 @@ module NineGag
     def self.path_or_html(data)
       # if path
       if data.length < 50
-        open(data)
+        URI.parse(data).read
       else
         data
       end
