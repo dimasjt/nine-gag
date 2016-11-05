@@ -16,13 +16,13 @@ Or install it yourself as:
 
 ## Usage
 
-* Get data from /section/type
+### Get data from /section/type
 ```ruby
 # http://9gag.com/gif/hot
 NineGag::Scraper.index('gif/hot')
 ```
 
-* Load more data
+### Load more data
 ```ruby
 NineGag::Scraper.index('gif/hot', :last_id_post)
 
@@ -35,7 +35,7 @@ last_id = posts.last.id
 posts = NineGag::Scraper.index('gif/hot', last_id)
 ```
 
-* Detail post
+### Detail post
 ```ruby
 post = NineGag::Scraper.show(:post_id)
 ```
