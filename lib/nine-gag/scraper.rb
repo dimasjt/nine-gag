@@ -5,10 +5,12 @@ module NineGag
     # path = ":section/:type"
     # next_page = "last_id"
     def self.index(path, next_page = nil)
-      if next_page.nil?
-        data = scrape_html(path)
+      path = full_url(path)
+
+      data = if next_page.nil?
+        scrape_html(path)
       else
-        data = generate_json_posts(path, next_page)
+        generate_json_posts(path, next_page)
       end
 
       generate_index_data(data, next_page)
@@ -16,6 +18,7 @@ module NineGag
 
     # path = "gag/:id"
     def self.show(path)
+      path = full_url("gag/#{path}")
       generate_show_data(scrape_html(path).search('article').first)
     end
 
@@ -33,7 +36,7 @@ module NineGag
     end
 
     def self.scrape_json(path, next_page)
-      RestClient.get(full_url(path),
+      RestClient.get(path,
         { Accept: 'application/json', "X-Requested-With": 'XMLHttpRequest',
           params: { id: next_page, c: 10 }
         }
@@ -49,7 +52,7 @@ module NineGag
     def self.path_or_html(data)
       # if path
       if data.length < 50
-        open full_url(data)
+        open data
       else
         data
       end
