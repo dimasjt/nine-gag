@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'nine-gag/nine_gag_test'
+require 'nine-gag'
 
 require 'minitest/autorun'
 require 'minitest/reporters'
