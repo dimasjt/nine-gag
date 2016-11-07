@@ -23,25 +23,25 @@ Or install it yourself as:
 ### Get data from /section/type
 ```ruby
 # http://9gag.com/gif/hot
-NineGag::Scraper.index('gif/hot')
+NineGag.index('gif/hot')
 ```
 
 ### Load more data
 ```ruby
-NineGag::Scraper.index('gif/hot', :last_id_post)
+NineGag.index('gif/hot', :last_id_post)
 
 # example
 # page 1
-posts = NineGag::Scraper.index('gif/hot')
+posts = NineGag.index('gif/hot')
 
 # page 2
 last_id = posts.last.id
-posts = NineGag::Scraper.index('gif/hot', last_id)
+posts = NineGag.index('gif/hot', last_id)
 ```
 
 ### Detail post
 ```ruby
-post = NineGag::Scraper.show(:post_id)
+post = NineGag.show(:post_id)
 ```
 
 ## Contributing
