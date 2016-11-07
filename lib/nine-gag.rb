@@ -5,7 +5,6 @@ require 'json'
 
 require 'nine-gag/version'
 require 'nine-gag/scraper'
-require 'nine-gag/generator'
 
 module NineGag
   def self.index(path, next_page = nil)
