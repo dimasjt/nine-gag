@@ -1,3 +1,7 @@
+| master | develop |
+| ------ | ------- |
+| [![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=master)](https://travis-ci.org/dimasjt/nine-gag) | [![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=develop)](https://travis-ci.org/dimasjt/nine-gag) |
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -16,28 +20,28 @@ Or install it yourself as:
 
 ## Usage
 
-* Get data from /section/type
+### Get data from /section/type
 ```ruby
 # http://9gag.com/gif/hot
-NineGag::Scraper.index('gif/hot')
+NineGag.index('gif/hot')
 ```
 
-* Load more data
+### Load more data
 ```ruby
-NineGag::Scraper.index('gif/hot', :last_id_post)
+NineGag.index('gif/hot', :last_id_post)
 
 # example
 # page 1
-posts = NineGag::Scraper.index('gif/hot')
+posts = NineGag.index('gif/hot')
 
 # page 2
 last_id = posts.last.id
-posts = NineGag::Scraper.index('gif/hot', last_id)
+posts = NineGag.index('gif/hot', last_id)
 ```
 
-* Detail post
+### Detail post
 ```ruby
-post = NineGag::Scraper.show(:post_id)
+post = NineGag.show(:post_id)
 ```
 
 ## Contributing
