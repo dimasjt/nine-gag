@@ -5,8 +5,6 @@ module NineGag
     # path = ":section/:type"
     # next_page = "last_id"
     def self.index(path, next_page = nil)
-      path = full_url(path)
-
       data = if next_page.nil?
         scrape_html(path)
       else
@@ -18,15 +16,10 @@ module NineGag
 
     # path = "gag/:id"
     def self.show(path)
-      path = full_url("gag/#{path}")
       generate_show_data(scrape_html(path).search('article').first)
     end
 
     private
-
-    def self.full_url(path)
-      "http://9gag.com/#{path}"
-    end
 
     # will return Array of Nokogiri
     def self.generate_json_posts(path, next_page)
