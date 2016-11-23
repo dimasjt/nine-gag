@@ -5,7 +5,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'nine-gag', '>= 0.1.2'
+gem 'nine-gag', '>= 0.1.3'
 ```
 
 And then execute:
