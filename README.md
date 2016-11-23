@@ -19,21 +19,51 @@ Or install it yourself as:
 ## Usage
 
 ### Get data from /section/type
+#### Request
 ```ruby
-# http://9gag.com/gif/hot
-NineGag.index('gif/hot')
+# http://9gag.com/funny/hot
+NineGag.index('funny/hot')
+```
+
+#### Response
+```ruby
+[
+  {
+    :id=>"ajqgWZp",
+    :title=>"How deal with a Warlord",
+    :url=>"http://9gag.com/gag/ajqgWZp",
+    :image=>"http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
+    :comments_count=>28,
+    :points=>"464",
+    :media=> {
+      :poster=>"http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
+      :mp4=>"http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
+      :webm=>"http://img-9gag-fun.9cache.com/photo/ajqgWZp_460svwm.webm"
+    }
+  },
+  {
+    :id=>"aERpNWM",
+    :title=>"Some people really deserve this high-five",
+    :url=>"http://9gag.com/gag/aERpNWM",
+    :image=>"http://img-9gag-fun.9cache.com/photo/aERpNWM_460s.jpg",
+    :comments_count=>166,
+    :points=>"6388",
+    :media=>nil
+  },
+  ....
+]
 ```
 
 ### Load more data
 ```ruby
-NineGag.index('gif/hot', :last_id_post)
+NineGag.index('funny/hot', :last_id_post)
 
 # example
 # page 1
-posts = NineGag.index('gif/hot')
+posts = NineGag.index('funny/hot')
 
 # page 2
-last_id = posts.last.id
+last_id = posts.last[:id]
 posts = NineGag.index('gif/hot', last_id)
 ```
 
