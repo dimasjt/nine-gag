@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module NineGag
   class Scraper
     # path = ":section/:type"
@@ -60,7 +58,7 @@ module NineGag
 
       post_meta = post.search('p.post-meta').first
 
-      post_data = {
+      {
         id: post.attribute('data-entry-id').value,
         title: title.text.strip,
         url: post.attribute('data-entry-url').value,
@@ -69,8 +67,6 @@ module NineGag
         points: post_meta.search('a.point').first.text.sub(' points', '').sub(',', '').strip,
         media: media_data(post.search('video').first)
       }
-
-      OpenStruct.new(post_data)
     end
 
     def self.generate_index_data(scrape, next_page)
