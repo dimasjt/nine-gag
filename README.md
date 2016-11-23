@@ -1,13 +1,11 @@
-| master | develop |
-| ------ | ------- |
-| [![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=master)](https://travis-ci.org/dimasjt/nine-gag) | [![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=develop)](https://travis-ci.org/dimasjt/nine-gag) |
+[![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=develop)](https://travis-ci.org/dimasjt/nine-gag)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'nine-gag'
+gem 'nine-gag', '>= 0.1.2'
 ```
 
 And then execute:
