@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/nine-gag.svg)](https://badge.fury.io/rb/nine-gag)
 [![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=develop)](https://travis-ci.org/dimasjt/nine-gag)
 
 ## Installation
