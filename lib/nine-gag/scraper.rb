@@ -64,8 +64,9 @@ module NineGag
         url: post.attribute('data-entry-url').value,
         image: image_data(post.search('div.badge-post-container a img').first),
         comments_count: post_meta.search('a.comment').first.text.sub(' comments', '').sub(',', '').strip.to_i,
-        points: post_meta.search('a.point').first.text.sub(' points', '').sub(',', '').strip,
-        media: media_data(post.search('video').first)
+        points: post_meta.search('.badge-item-love-count').first.text.sub(',', '').to_i,
+        media: media_data(post.search('video').first),
+        nsfw: !post.search('.nsfw-post').empty?
       }
     end
 
@@ -78,7 +79,7 @@ module NineGag
     end
 
     def self.image_data(image)
-      return nil if image.nil?
+      return "https://placeholdit.imgix.net/~text?txtsize=60&txt=NSFW&w=500&h=350&bg=000000&txtclr=ffffff" if image.nil?
 
       image.attribute('src').value
     end
