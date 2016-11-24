@@ -27,11 +27,13 @@ module NineGag
     end
 
     def self.scrape_json(path, next_page)
-      RestClient.get(path,
-        { Accept: 'application/json', "X-Requested-With": 'XMLHttpRequest',
-          params: { id: next_page, c: 10 }
-        }
-      )
+      headers = {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        params: { id: next_page, c: 10 }
+      }
+
+      RestClient.get(path, headers)
     end
 
     # scrape html or from path
