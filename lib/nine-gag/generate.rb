@@ -4,7 +4,7 @@ module NineGag
       @data = data
     end
 
-    def index(pagination)
+    def index
       @data.map do |post|
         generate_show_data(post, true)
       end
@@ -15,9 +15,7 @@ module NineGag
     end
 
     def comments
-      comments = JSON.parse(@data.body)["payload"]["comments"]
-
-      comments.map do |comment|
+      @data.map do |comment|
         generated_comment = generate_comment_data(comment)
         generated_comment.merge!(
           children: [],
@@ -69,12 +67,6 @@ module NineGag
 
     def media_comment(comment, media)
       comment["embedMediaMeta"].fetch("embedImage", {}).fetch(media, {}).fetch("url", nil)
-    end
-
-    def generate_json_posts(path, next_page)
-      items = JSON.parse(scrape_json(path, next_page).body)["items"]
-
-      items.map { |item| scrape_html(item.last).search('article').first }
     end
 
     def generate_show_data(post, index = false)

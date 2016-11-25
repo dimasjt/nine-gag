@@ -11,7 +11,7 @@ module NineGag
   def self.index(path, next_page = nil)
     data = NineGag::Scraper.new(path).index(next_page)
 
-    NineGag::Generate.new(data).index(!next_page.nil?)
+    NineGag::Generate.new(data).index
   end
 
   def self.show(path)

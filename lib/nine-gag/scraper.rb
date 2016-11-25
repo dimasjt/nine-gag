@@ -36,7 +36,8 @@ module NineGag
       }
       params.merge(ref: next_page) unless next_page.nil?
 
-      RestClient.get(url, { params: params })
+      response = RestClient.get(url, { params: params })
+      JSON.parse(response.body)["payload"]["comments"]
     end
 
     private
