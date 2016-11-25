@@ -15,8 +15,6 @@ module NineGag
     NineGag::Scraper.show(full_url("gag/#{path}"))
   end
 
-  private
-
   def self.full_url(path)
     "http://9gag.com/#{path}"
   end
