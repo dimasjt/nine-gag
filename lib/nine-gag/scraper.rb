@@ -1,32 +1,58 @@
 module NineGag
   class Scraper
+    def initialize(path)
+      @path = path
+    end
+
     # path = ":section/:type"
     # next_page = "last_id"
-    def self.index(path, next_page = nil)
-      data = if next_page.nil?
-        scrape_html(path)
-      else
-        generate_json_posts(path, next_page)
-      end
+    def index(next_page = nil)
+      url = full_url(@path)
 
-      generate_index_data(data, next_page)
+      if next_page.nil?
+        scrape_html(url).search('article')
+      else
+        generate_json_posts(url, next_page)
+      end
     end
 
     # path = "gag/:id"
-    def self.show(path)
-      generate_show_data(scrape_html(path).search('article').first)
+    def show
+      url = full_url("gag/#{@path}")
+
+      scrape_html(url).search('article').first
+    end
+
+    def comments(next_page)
+      url = 'http://comment-cdn.9gag.com/v1/cacheable/comment-list.json'
+      params = {
+        appId: "a_dd8f2b7d304a10edaf6f29517ea0ca4100a43d1b",
+        url: full_url("gag/#{@path}"),
+        count: 10,
+        level: 2,
+        order: 'score',
+        mentionMapping: true,
+        origin: '9gag.com'
+      }
+      params.merge(ref: next_page) unless next_page.nil?
+
+      RestClient.get(url, { params: params })
     end
 
     private
 
+    def full_url(path)
+      "http://9gag.com/#{path}"
+    end
+
     # will return Array of Nokogiri
-    def self.generate_json_posts(path, next_page)
+    def generate_json_posts(path, next_page)
       items = JSON.parse(scrape_json(path, next_page).body)["items"]
 
       items.map { |item| scrape_html(item.last).search('article').first }
     end
 
-    def self.scrape_json(path, next_page)
+    def scrape_json(path, next_page)
       headers = {
         Accept: 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
@@ -37,63 +63,18 @@ module NineGag
     end
 
     # scrape html or from path
-    def self.scrape_html(path)
+    def scrape_html(path)
       Nokogiri::HTML(path_or_html(path))
     end
 
     # check parameter if path or html
-    def self.path_or_html(data)
+    def path_or_html(data)
       # if path
       if data.length < 50
         open data
       else
         data
       end
-    end
-
-    def self.generate_show_data(post, index = false)
-      if index
-        title = post.search('h2.badge-item-title .badge-evt')
-      else
-        title = post.search('h2.badge-item-title')
-      end
-
-      post_meta = post.search('p.post-meta').first
-
-      {
-        id: post.attribute('data-entry-id').value,
-        title: title.text.strip,
-        url: post.attribute('data-entry-url').value,
-        image: image_data(post.search('div.badge-post-container a img').first),
-        comments_count: post_meta.search('a.comment').first.text.sub(' comments', '').sub(',', '').strip.to_i,
-        points: post_meta.search('.badge-item-love-count').first.text.sub(',', '').to_i,
-        media: media_data(post.search('video').first),
-        nsfw: !post.search('.nsfw-post').empty?
-      }
-    end
-
-    def self.generate_index_data(scrape, next_page)
-      data = next_page.nil? ? scrape.search('article') : scrape
-
-      data.map do |post|
-        generate_show_data(post)
-      end
-    end
-
-    def self.image_data(image)
-      return "https://placeholdit.imgix.net/~text?txtsize=60&txt=NSFW&w=500&h=350&bg=000000&txtclr=ffffff" if image.nil?
-
-      image.attribute('src').value
-    end
-
-    def self.media_data(media)
-      return nil if media.nil?
-      videos = media.search('source')
-      {
-        poster: media.attribute('poster').value,
-        mp4: videos.first.attribute('src').value,
-        webm: videos.last.attribute('src').value
-      }
     end
   end
 end

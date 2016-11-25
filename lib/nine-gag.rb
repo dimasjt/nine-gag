@@ -5,17 +5,24 @@ require 'json'
 
 require 'nine-gag/version'
 require 'nine-gag/scraper'
+require 'nine-gag/generate'
 
 module NineGag
   def self.index(path, next_page = nil)
-    NineGag::Scraper.index(full_url(path), next_page)
+    data = NineGag::Scraper.new(path).index(next_page)
+
+    NineGag::Generate.new(data).index(!next_page.nil?)
   end
 
   def self.show(path)
-    NineGag::Scraper.show(full_url("gag/#{path}"))
+    data = NineGag::Scraper.new(path).show
+
+    NineGag::Generate.new(data).show
   end
 
-  def self.full_url(path)
-    "http://9gag.com/#{path}"
+  def self.comments(id, next_page = nil)
+    data = NineGag::Scraper.new(id).comments(next_page)
+
+    NineGag::Generate.new(data).comments
   end
 end
