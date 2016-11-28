@@ -36,7 +36,7 @@ NineGag.index('funny/hot')
     :url => "http://9gag.com/gag/ajqgWZp",
     :image => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
     :comments_count => 28,
-    :points => "464",
+    :points => 464,
     :media =>  {
       :poster => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
       :mp4 => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
@@ -49,7 +49,7 @@ NineGag.index('funny/hot')
     :url => "http://9gag.com/gag/aERpNWM",
     :image => "http://img-9gag-fun.9cache.com/photo/aERpNWM_460s.jpg",
     :comments_count => 166,
-    :points => "6388",
+    :points => 6388,
     :media => nil
   },
   ....
@@ -83,7 +83,7 @@ post = NineGag.show(:post_id)
   :url => "http://9gag.com/gag/ajqgWZp",
   :image => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
   :comments_count => 28,
-  :points => "464",
+  :points => 464,
   :media =>  {
     :poster => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
     :mp4 => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
