@@ -45,7 +45,8 @@ NineGag.index('funny/hot')
       :poster => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
       :mp4 => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
       :webm => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460svwm.webm"
-    }
+    },
+    :nsfw => false
   },
   {
     :id => "aERpNWM",
@@ -54,7 +55,8 @@ NineGag.index('funny/hot')
     :image => "http://img-9gag-fun.9cache.com/photo/aERpNWM_460s.jpg",
     :comments_count => 166,
     :points => 6388,
-    :media => nil
+    :media => nil,
+    :nsfw => false
   },
   ....
 ]
@@ -92,7 +94,8 @@ post = NineGag.show(:post_id)
     :poster => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
     :mp4 => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
     :webm => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460svwm.webm"
-  }
+  },
+  :nsfw => false
 }
 ```
 
