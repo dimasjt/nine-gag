@@ -9,18 +9,20 @@ module NineGag
     def index(next_page = nil)
       url = full_url(@path)
 
-      if next_page.nil?
-        scrape_html(url).search('article')
-      else
-        generate_json_posts(url, next_page)
-      end
+      headers = {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        params: { id: next_page }
+      }
+
+      RestClient.get(url, headers)
     end
 
     # path = "gag/:id"
     def show
       url = full_url("gag/#{@path}")
 
-      scrape_html(url).search('article').first
+      Nokogiri::HTML(open(path))
     end
 
     def comments(next_page)
@@ -36,46 +38,13 @@ module NineGag
       }
       params.merge(ref: next_page) unless next_page.nil?
 
-      response = RestClient.get(url, { params: params })
-      JSON.parse(response.body)["payload"]["comments"]
+      RestClient.get(url, { params: params })
     end
 
     private
 
     def full_url(path)
       "http://9gag.com/#{path}"
-    end
-
-    # will return Array of Nokogiri
-    def generate_json_posts(path, next_page)
-      items = JSON.parse(scrape_json(path, next_page).body)["items"]
-
-      items.map { |item| scrape_html(item.last).search('article').first }
-    end
-
-    def scrape_json(path, next_page)
-      headers = {
-        Accept: 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        params: { id: next_page, c: 10 }
-      }
-
-      RestClient.get(path, headers)
-    end
-
-    # scrape html or from path
-    def scrape_html(path)
-      Nokogiri::HTML(path_or_html(path))
-    end
-
-    # check parameter if path or html
-    def path_or_html(data)
-      # if path
-      if data.length < 50
-        open data
-      else
-        data
-      end
     end
   end
 end

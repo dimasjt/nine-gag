@@ -5,16 +5,20 @@ module NineGag
     end
 
     def index
+      @data = JSON.parse(@data.body)["items"]
       @data.map do |post|
+        post = Nokogiri::HTML(post.last).search('article').first
         generate_show_data(post, true)
       end
     end
 
     def show
+      @data = @data.search('article').first
       generate_show_data(@data)
     end
 
     def comments
+      @data = JSON.parse(@data.body)["payload"]["comments"]
       @data.map do |comment|
         generated_comment = generate_comment_data(comment)
         generated_comment.merge!(
