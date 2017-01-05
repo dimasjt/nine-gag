@@ -66,7 +66,7 @@ posts = NineGag.index('funny/hot')
 
 # page 2
 last_id = posts.last[:id]
-posts = NineGag.index('funny/hot', last_post_id)
+posts = NineGag.index('funny/hot', last_id)
 ```
 
 ### Detail post
