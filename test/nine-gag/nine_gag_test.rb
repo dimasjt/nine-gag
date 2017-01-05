@@ -36,10 +36,18 @@ describe NineGag do
   end
 
   describe '#show' do
-    it 'should return openstruct' do
+    it 'should return post' do
       post = NineGag.show(@posts.first[:id])
 
       assert_equal post.class.name, 'Hash'
+    end
+  end
+
+  describe '#comments' do
+    it 'should return comments of post' do
+      comments = NineGag.comments(@posts.first[:id])
+
+      assert_equal comments.class.name, 'Array'
     end
   end
 end

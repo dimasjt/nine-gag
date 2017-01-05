@@ -22,7 +22,7 @@ module NineGag
     def show
       url = full_url("gag/#{@path}")
 
-      Nokogiri::HTML(open(path))
+      Nokogiri::HTML(open(url))
     end
 
     def comments(next_page)
