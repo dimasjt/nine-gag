@@ -1,53 +1,36 @@
 require 'test_helper'
 
-describe NineGag do
+describe "NineGag" do
   before do
-    @posts = NineGag.index('hot')
+    @result = NineGag.trending
+    @post = @result[:data].first
   end
 
-  describe '#index' do
-    it 'should return array of post' do
-      assert_equal @posts.class, Array
+  describe '#group' do
+    it 'should return success' do
+      assert_equal @result[:status], 'success'
     end
 
     it 'can show next page of posts' do
-      posts = NineGag.index('hot', @posts.last[:id])
-      assert_equal posts.class, Array
-    end
-
-    it 'should not nil if gif post' do
-      post = NineGag.index('gif/hot').first
-      assert post[:media] != nil
+      result = NineGag.hot({ after: @post[:id] })
+      assert_equal result[:data][0][:title], @result[:data][1][:title]
     end
 
     it 'should return Fixnum of points' do
-      assert_equal @posts.first[:points].class, Fixnum
+      assert_equal @post[:points].class, Fixnum
     end
 
     it 'should return Fixnum of comments count' do
-      assert_equal @posts.first[:comments_count].class, Fixnum
-    end
-
-    it 'should return true if nsfw post' do
-      post = NineGag.index('nsfw/hot').first
-
-      assert post[:nsfw]
-    end
-  end
-
-  describe '#show' do
-    it 'should return post' do
-      post = NineGag.show(@posts.first[:id])
-
-      assert_equal post.class.name, 'Hash'
+      assert_equal @post[:comments_count].class, Fixnum
     end
   end
 
   describe '#comments' do
     it 'should return comments of post' do
-      comments = NineGag.comments(@posts.first[:id])
+      comments = NineGag.comments(@post[:id])
 
-      assert_equal comments.class.name, 'Array'
+      assert_equal comments[:status], 'success'
+      assert_equal comments[:data].class, Array
     end
   end
 end

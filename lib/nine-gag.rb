@@ -61,20 +61,30 @@ class NineGag
       result = RestClient.get(url, headers)
       data =
         JSON.parse(result.body, symbolize_names: true)[:data][:posts].map do |post|
-          {
+          p = {
             id: post[:id],
             title: post[:title],
             url: post[:url],
             comments_count: post[:commentsCount],
             points: post[:upVoteCount],
+            nsfw: !post[:nsfw].zero?,
+            video: false,
             media: {
               image: post[:images][:image700][:url],
-              poster: post[:images][:image460][:url],
-              mp4: post[:images][:image460sv][:url],
-              webvm: post[:images][:image460svwm][:url]
+              poster: post[:images][:image460][:url]
             },
             tags: post[:tags].map {|t| t[:key]}
           }
+
+          if post[:type] == "Animated"
+            p[:video] = true
+            p[:media].merge!(
+              mp4: post[:images][:image460sv][:url],
+              webvm: post[:images][:image460svwm][:url]
+            )
+          end
+
+          p
         end
 
       {
