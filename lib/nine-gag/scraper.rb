@@ -44,7 +44,8 @@ module NineGag
     private
 
     def full_url(path)
-      "http://9gag.com/#{path}"
+      # "https://9gag.com/v1/group-posts/group/gif/type/hot"
+      "http://9gag.com/v1/group-posts/group/#{path}"
     end
   end
 end

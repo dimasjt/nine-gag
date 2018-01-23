@@ -1,28 +1,74 @@
 require 'open-uri'
-require 'nokogiri'
 require 'rest-client'
 require 'json'
 
-require 'nine-gag/version'
-require 'nine-gag/scraper'
-require 'nine-gag/generate'
+class NineGag
+  DEFAULT = %w[hot trending fresh].freeze
 
-module NineGag
-  def self.index(path, next_page = nil)
-    data = NineGag::Scraper.new(path).index(next_page)
+  def self.comments(id)
+    url = 'http://comment-cdn.9gag.com/v1/cacheable/comment-list.json'
+    params = {
+      appId: "a_dd8f2b7d304a10edaf6f29517ea0ca4100a43d1b",
+      url: "http://9gag.com/gag/#{id}",
+      count: 10,
+      level: 2,
+      order: 'score',
+      mentionMapping: true,
+      origin: '9gag.com'
+    }
+    # params.merge(ref: next_page) unless next_page.nil?
 
-    NineGag::Generate.new(data).index
+    begin
+      result = RestClient.get(url, { params: params })
+      {
+        status: "success",
+        data: JSON.parse(result.body, symbolize_names: true)[:payload][:comments]
+      }
+    rescue RestClient::ExceptionWithResponse => e
+      {
+        status: "failed",
+        message: e.response
+      }
+    end
   end
 
-  def self.show(path)
-    data = NineGag::Scraper.new(path).show
+  def self.method_missing(method_name, *args, &block)
+    group =
+      if DEFAULT.include?(method_name)
+        "default"
+      else
+        method_name
+      end
 
-    NineGag::Generate.new(data).show
+    opts = args[0] || {}
+    type = opts.fetch(:type, nil)
+    after = opts.fetch(:after, nil)
+
+    type = %w[hot fresh].include?(type) ? type : "hot"
+    post_scrape(group, type, after)
   end
 
-  def self.comments(id, next_page = nil)
-    data = NineGag::Scraper.new(id).comments(next_page)
+  private
 
-    NineGag::Generate.new(data).comments
+  def self.post_scrape(group = "default", type = "hot", after = nil)
+    url = "https://9gag.com/v1/group-posts/group/#{group}/type/#{type}"
+    headers = {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      params: { after: after }
+    }
+
+    begin
+      result = RestClient.get(url, headers)
+      {
+        status:  "success",
+        data: JSON.parse(result.body, symbolize_names: true)[:data][:posts]
+      }
+    rescue RestClient::ExceptionWithResponse => e
+      {
+        status: "failed",
+        message: e.response
+      }
+    end
   end
 end
