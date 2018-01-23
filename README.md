@@ -1,13 +1,12 @@
 [![Gem Version](https://badge.fury.io/rb/nine-gag.svg)](https://badge.fury.io/rb/nine-gag)
 [![Build Status](https://travis-ci.org/dimasjt/nine-gag.svg?branch=develop)](https://travis-ci.org/dimasjt/nine-gag)
-[![Code Climate](https://codeclimate.com/github/dimasjt/nine-gag/badges/gpa.svg)](https://codeclimate.com/github/dimasjt/nine-gag)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'nine-gag', '>= 0.1.3'
+gem 'nine-gag', '>= 1.0.0'
 ```
 
 And then execute:
@@ -20,129 +19,46 @@ Or install it yourself as:
 
 ## Usage
 
-* [Posts](https://github.com/dimasjt/nine-gag/tree/develop#get-posts)
-* [Detail post](https://github.com/dimasjt/nine-gag/tree/develop#get-detail-post)
-* [Comments post](https://github.com/dimasjt/nine-gag/tree/develop#get-comments-post)
+* [Posts](#get-posts)
+* [Comments post](#get-comments)
 
 ### Get Posts
 #### Request
 ```ruby
-# http://9gag.com/funny/hot
-NineGag.index('funny/hot')
+NineGag.trending # http://9gag.com/trending
+NineGag.hot # http://9ag.com/hot
+NineGag.gif({ type: "fresh" }) # http://9gag.com/gif/fresh
+NineGag.nsfw({ type: "hot" }) # http://9gag.com/nsfw/hot
+NineGag.cute({ type: "fresh", after: "aAxVod2" }) # http://9gag.com/cute/fresh pagination after post id aAxVod2
 ```
 
-#### Response
-```ruby
-[
-  {
-    :id => "ajqgWZp",
-    :title => "How deal with a Warlord",
-    :url => "http://9gag.com/gag/ajqgWZp",
-    :image => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
-    :comments_count => 28,
-    :points => 464,
-    :media =>  {
-      :poster => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
-      :mp4 => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
-      :webm => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460svwm.webm"
-    }
-  },
-  {
-    :id => "aERpNWM",
-    :title => "Some people really deserve this high-five",
-    :url => "http://9gag.com/gag/aERpNWM",
-    :image => "http://img-9gag-fun.9cache.com/photo/aERpNWM_460s.jpg",
-    :comments_count => 166,
-    :points => 6388,
-    :media => nil
-  },
-  ....
-]
-```
-
-### Load more data
-```ruby
-NineGag.index('funny/hot', :last_id_post)
-
-# example
-# page 1
-posts = NineGag.index('funny/hot')
-
-# page 2
-last_id = posts.last[:id]
-posts = NineGag.index('funny/hot', last_id)
-```
-
-### Get Detail Post
-#### Request
-```ruby
-post = NineGag.show(:post_id)
-```
-
-#### Response
-```ruby
+### Result
+```json
 {
-  :id => "ajqgWZp",
-  :title => "How deal with a Warlord",
-  :url => "http://9gag.com/gag/ajqgWZp",
-  :image => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
-  :comments_count => 28,
-  :points => 464,
-  :media =>  {
-    :poster => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460s.jpg",
-    :mp4 => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460sv.mp4",
-    :webm => "http://img-9gag-fun.9cache.com/photo/ajqgWZp_460svwm.webm"
-  }
+  :status=>"success",
+  :data=> [
+    {
+      :id=>"ayXpOeY",
+      :title=>"Too cold",
+      :url=>"http://9gag.com/gag/ayXpOeY",
+      :comments_count=>5,
+      :points=>35,
+      :nsfw=>true,
+      :video=>true,
+      :media=>{
+        :image=>"https://img-9gag-fun.9cache.com/photo/ayXpOeY_460s.jpg",
+        :poster=>"https://img-9gag-fun.9cache.com/photo/ayXpOeY_460s.jpg",
+        :mp4=>"https://img-9gag-fun.9cache.com/photo/ayXpOeY_460sv.mp4",
+        :webvm=>"https://img-9gag-fun.9cache.com/photo/ayXpOeY_460svwm.webm"
+      },
+      :tags=>["Awesome"]
+    },
+    ....
+  ]
 }
 ```
 
-### Get Comments Post
-#### Request
-```ruby
-NineGag.comments(:post_id)
-```
-
-#### Response
-```ruby
-[
-  {
-    :id => "c_148359676629369444",
-    :text => "http://i.memeful.com/media/post/YRO9Qqw_700wa_0.gif",
-    :timestamp => 1483596766,
-    :user_id => "u_13994024017199",
-    :permalink => "http://9gag.com/gag/a6Mg7mL#cs_comment_id=c_148359676629369444",
-    :points => 25,
-    :media => {
-      :jpg => "http://img-comment-fun.9cache.com/media/9a1d1430145033986894189858_700w_0.jpg",
-      :gif => "http://img-comment-fun.9cache.com/media/9a1d1430145033986894189858_700wa_0.gif",
-      :mp4 => "http://img-comment-fun.9cache.com/media/9a1d1430145033986894189858_700wv_0.mp4"
-    },
-    :user => {
-      :id => "u_13994024017199",
-      :avatar => "http://accounts-cdn.9gag.com/media/avatar/17248840_100_13.jpg",
-      :username=>"mister_widodo"
-    },
-    :children => [
-      {
-        :id => "c_148359764385634228",
-        :text => "@mister_widodo perfect",
-        :timestamp => 1483597643,
-        :user_id => "u_145203259185649618",
-        :permalink => "http://9gag.com/gag/a6Mg7mL#cs_comment_id=c_148359764385634228",
-        :points => 1,
-        :media => nil,
-        :user => {
-          :id => "u_145203259185649618",
-          :avatar => "http://accounts-cdn.9gag.com/media/avatar/27974937_100_1.jpg",
-          :username => "psoric39"
-        }
-      }
-    ],
-    :order_key=>"score_00000000001004_14835967662936"
-  },
-  .......
-]
-```
+### Get Comments
 
 ## Contributing
 
