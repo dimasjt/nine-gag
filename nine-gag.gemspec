@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'nine-gag/version'
+require 'nine-gag'
 
 Gem::Specification.new do |spec|
   spec.name          = 'nine-gag'
-  spec.version       = NineGag::VERSION
+  spec.version       = '1.0.0'
   spec.authors       = ['Dimas J. Taniawan']
   spec.email         = ['dimazniawan@gmail.com']
 
@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.0.0'
 
-  spec.add_dependency 'nokogiri', '~> 1.6.0', '>= 1.6.0'
+  # spec.add_dependency 'nokogiri', '~> 1.8.0', '>= 1.8.0'
   spec.add_dependency 'rest-client', '~> 2.0.0', '>= 2.0.0'
 
   spec.add_development_dependency 'bundler', '~> 1.13'
