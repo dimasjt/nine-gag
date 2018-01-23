@@ -19,9 +19,26 @@ class NineGag
 
     begin
       result = RestClient.get(url, { params: params })
+      data = JSON.parse(result.body, symbolize_names: true)[:payload][:comments].map do |c|
+        user = c[:user]
+        comment = {
+          id: c[:commentId],
+          text: c[:text],
+          timestamp: c[:timestamp],
+          level: c[:level],
+          likes_count: c[:likeCount],
+          dislikes_count: c[:dislikeCount],
+          permalink: c[:permalink],
+          user: {
+            user_id: user[:userId],
+            avatar_url: user[:avatarUrl],
+            display_name: user[:displayName]
+          }
+        }
+      end
       {
         status: "success",
-        data: JSON.parse(result.body, symbolize_names: true)[:payload][:comments]
+        data: data
       }
     rescue RestClient::ExceptionWithResponse => e
       {
