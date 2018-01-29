@@ -5,7 +5,7 @@ require 'nine-gag'
 
 Gem::Specification.new do |spec|
   spec.name          = 'nine-gag'
-  spec.version       = '1.0.0'
+  spec.version       = '1.0.1'
   spec.authors       = ['Dimas J. Taniawan']
   spec.email         = ['dimazniawan@gmail.com']
 
