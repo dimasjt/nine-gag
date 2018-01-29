@@ -2,7 +2,7 @@ require 'rest-client'
 require 'json'
 
 class NineGag
-  DEFAULT = %w[hot trending fresh].freeze
+  DEFAULT = %i[hot trending fresh].freeze
 
   def self.comments(id)
     url = 'http://comment-cdn.9gag.com/v1/cacheable/comment-list.json'
@@ -49,24 +49,24 @@ class NineGag
   end
 
   def self.method_missing(method_name, *args, &block)
-    group =
+    opts = args[0] || {}
+    type = opts.fetch(:type, "hot")
+    after = opts.fetch(:after, nil)
+    raise ArgumentError, "type is invalid, only :fresh or :hot" unless %w[hot fresh].include?(type.to_s)
+
+    group, type =
       if DEFAULT.include?(method_name)
-        "default"
+        ["default", method_name]
       else
-        method_name
+        [method_name, type]
       end
 
-    opts = args[0] || {}
-    type = opts.fetch(:type, nil)
-    after = opts.fetch(:after, nil)
-
-    type = %w[hot fresh].include?(type) ? type : "hot"
     post_scrape(group, type, after)
   end
 
   private
 
-  def self.post_scrape(group = "default", type = "hot", after = nil)
+  def self.post_scrape(group, type, after = nil)
     url = "https://9gag.com/v1/group-posts/group/#{group}/type/#{type}"
     headers = {
       Accept: 'application/json',
